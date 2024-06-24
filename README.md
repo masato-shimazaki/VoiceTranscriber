@@ -26,10 +26,50 @@ Python3とpip3が正しくインストールされているか確認します。
     ```
 
 
+## 仮想環境の作成と使用
+   
+1. プロジェクトディレクトリに移動:
 
+    ``` zsh
+    cd path/to/your/project
+    ```
+
+2. 仮想環境の作成:
+
+    プロジェクトディレクトリ内に仮想環境を作成します。
+
+    ``` zsh
+    pip3 -m venv venv
+    ```
+
+    ```venv```は仮想環境のディレクトリ名です。任意の名前に変更できます。
+
+3. 仮想環境のアクティブ化:
+
+    ``` zsh
+    source venv/bin/activate
+    ```
+
+4. パッケージのインストール:
+
+    仮想環境がアクティブな状態で、必要なパッケージをインストールします。
+
+    ``` zsh
+    pip3 install SpeechRecognition pydub
+    brew install ffmpeg
+    ```
+
+5. 仮想環境の非アクティブ化:
+
+    作業が終わったら、仮想環境を非アクティブ化します。
+
+    ``` zsh
+    deactivate
+    ```
 
 ## フォルダ構成
-```
+
+``` text
 your_project/
 │
 ├── your_project/                # メインのPythonパッケージ
