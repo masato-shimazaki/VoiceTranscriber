@@ -1,4 +1,5 @@
 import os
+import tempfile
 from pydub import AudioSegment
 import speech_recognition as sr
 
@@ -15,22 +16,29 @@ def convert_audio_to_text(audio_file):
         raise ValueError("サポートされていないファイル形式です: {}".format(file_extension))
 
     # 一時的にWAV形式で保存
-    temp_wav_file = "temp_audio.wav"
-    audio.export(temp_wav_file, format="wav")
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_wav_file:
+        audio.export(temp_wav_file.name, format="wav")
+        temp_wav_file_name = temp_wav_file.name
 
     # 音声認識のインスタンスを作成
     recognizer = sr.Recognizer()
 
     # 一時ファイルから音声データを読み込み
-    with sr.AudioFile(temp_wav_file) as source:
+    with sr.AudioFile(temp_wav_file_name) as source:
         audio_data = recognizer.record(source)
 
     # 一時ファイルを削除
-    os.remove(temp_wav_file)
+    os.remove(temp_wav_file_name)
 
     # 音声をテキストに変換
     try:
         text = recognizer.recognize_google(audio_data, language="ja-JP")
+
+        # 文字列をテキストファイルに保存
+        file_path = "output_text_file.txt"
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(text)
+            
         return "認識結果: " + text
     except sr.UnknownValueError:
         return "音声を理解できませんでした"

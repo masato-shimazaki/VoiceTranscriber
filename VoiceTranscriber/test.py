@@ -1,4 +1,5 @@
 import os
+import tempfile
 from pydub import AudioSegment
 import speech_recognition as sr
 
@@ -21,14 +22,14 @@ def convert_audio_to_text(audio_segment, index):
     :param index: セグメントのインデックス
     :return: 音声認識結果のテキスト
     """
-    temp_wav_file = f"temp_segment_{index}.wav"
-    audio_segment.export(temp_wav_file, format="wav")
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_wav_file:
+        audio_segment.export(temp_wav_file.name, format="wav")
 
     recognizer = sr.Recognizer()
-    with sr.AudioFile(temp_wav_file) as source:
+    with sr.AudioFile(temp_wav_file.name) as source:
         audio_data = recognizer.record(source)
 
-    os.remove(temp_wav_file)
+    os.remove(temp_wav_file.name)
 
     try:
         text = recognizer.recognize_google(audio_data, language="ja-JP")
@@ -66,4 +67,11 @@ def process_audio_file(audio_file):
 
 # 使用例
 audio_file_path = "audiofile.m4a"  # ここに音声ファイルのパスを指定
-process_audio_file(audio_file_path)
+results = process_audio_file(audio_file_path)
+
+file_path = "output_text_file.txt"
+
+# 文字列をテキストファイルに保存
+with open(file_path, "w", encoding="utf-8") as file:
+    for result in results:
+        file.write(result)
