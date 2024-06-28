@@ -21,7 +21,7 @@ Python3とpip3が正しくインストールされているか確認します。
 3. 必要なライブラリのインストール
    
     ``` zsh
-    pip3 install SpeechRecognition pydub
+    python3 install SpeechRecognition pydub
     pip3 install ffmpeg
     ```
 
